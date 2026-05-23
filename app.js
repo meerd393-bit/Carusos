@@ -501,6 +501,14 @@ let selectedOfferSize = 's'; // Default size for flat pricing
 
 // --- Setup App On Load ---
 document.addEventListener("DOMContentLoaded", async () => {
+    // Wait for Firebase to be ready (module loads async)
+    const waitForFirebase = () => new Promise(resolve => {
+        if (window._firebaseReady) return resolve();
+        window.addEventListener('firebase-ready', resolve, { once: true });
+        setTimeout(resolve, 3000); // fallback timeout
+    });
+    await waitForFirebase();
+
     await syncWithServer();
     initLanguage();
     initMenu();
