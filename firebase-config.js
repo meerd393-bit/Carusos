@@ -1,11 +1,9 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 // =====================================================
 // firebase-config.js - Carusos Restaurant
 // =====================================================
-// ⚠️ ضع هنا بيانات Firebase الخاصة بك
-// اذهب إلى: https://console.firebase.google.com
-// اختر مشروعك → Project Settings → Your Apps → Firebase SDK snippet
-// =====================================================
-
 const firebaseConfig = {
   apiKey: "AIzaSyBHxUJfiOPZtpFdF5wSDkXLmshVyY-VFfQ",
   authDomain: "carusos-restaurant.firebaseapp.com",
@@ -15,10 +13,6 @@ const firebaseConfig = {
   appId: "1:202624644443:web:25b93d1294296c99a2d67e",
   measurementId: "G-WDEEHBLT8C"
 };
-
-// Initialize Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
