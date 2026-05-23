@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0c0c0e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Carusos">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Carusos | مطعم كاروسوز - سلام، حب، وبيتزا</title>
+    <meta name="description" content="موقع مطعم كاروسوز (Carusos) الرسمي بأسيوط - أشهى البيتزا والبرجر المطهو بكل حب. اكتشف منيو الطعام الحقيقي واحجز طاولتك أونلاين أو اطلب دليفري سريع.">
+    <meta name="keywords" content="كاروسوز, مطعم كاروسوز, Carusos, بيتزا كاروسوز, برجر أسيوط, مطاعم أسيوط, بيتزا أسيوط الجديدة, توصيل أسيوط">
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="rtl">
+
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-pizza-ring">
+                <div class="loader-ring"></div>
+                <div class="loader-ring loader-ring-2"></div>
+                <img src="logo.jpg" alt="Carusos" class="loader-logo">
+            </div>
+            <div class="loader-text">
+                <span>C</span><span>A</span><span>R</span><span>U</span><span>S</span><span>O</span><span class="loader-text-red">S</span>
+            </div>
+            <p class="loader-tagline">سلام، حب وبيتزا ❤️</p>
+        </div>
+    </div>
+
+    <!-- Floating Particles Canvas -->
+    <canvas id="particlesCanvas" class="particles-canvas"></canvas>
+
+    <!-- -----------------------------------------------------------
+         Header / Navigation
+    ------------------------------------------------------------ -->
+    <header class="glass-nav">
+        <div class="container nav-wrapper">
+            <a href="#" class="logo-container">
+                <img class="logo-img" src="logo.jpg" alt="Carusos Logo">
+                <span class="logo-text" data-i18n="logoText">كاروسو<span>ز</span></span>
+            </a>
+            
+            <nav>
+                <ul class="nav-links" id="navLinksMenu">
+                    <li class="nav-item active"><a href="#hero" data-i18n="logoText">الرئيسية</a></li>
+                    <li class="nav-item"><a href="#promos" data-i18n="navMenu">قائمة الطعام</a></li>
+                    <li class="nav-item"><a href="#about" data-i18n="navStory">قصتنا</a></li>
+                    <li class="nav-item"><a href="#branches" data-i18n="navBranches">فروعنا</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-actions">
+                <button class="lang-switch" id="langSwitchBtn" onclick="toggleLanguage()">English 🌐</button>
+                
+                <button class="icon-btn cart-icon-btn" onclick="toggleCartSidebar()">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                
+                <a href="#booking" class="btn btn-primary btn-nav" data-i18n="navBook">حجز طاولة</a>
+                
+                <button class="menu-toggle" id="menuToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- -----------------------------------------------------------
+         Hero Section
+    ------------------------------------------------------------ -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-tag" data-i18n="heroTag">أكل يلمس قلبك 🥰</div>
+                <h1 class="hero-title" data-i18n="heroTitle">سلام، حب <span>وبيتزا.</span></h1>
+                <p class="hero-desc" data-i18n="heroDesc">استمتع بمذاق البيتزا الإيطالية الفاخرة المخبوزة في فرن الحطب، والبرجر المشوي بعناية، والباستا الطازجة المصنوعة يدوياً بأجود المكونات في أسيوط.</p>
+                
+                <div class="hero-actions">
+                    <a href="#promos" class="btn btn-primary" data-i18n="btnOrder">اطلب أونلاين</a>
+                    <a href="#booking" class="btn btn-secondary" data-i18n="btnBook">احجز طاولة</a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3 data-i18n="stat1Num">72 ساعة</h3>
+                        <p data-i18n="stat1Text">تخمير العجين</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 data-i18n="stat2Num">فرعين</h3>
+                        <p data-i18n="stat2Text">أجواء دافئة</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 data-i18n="stat3Num">4.9★</h3>
+                        <p data-i18n="stat3Text">تقييم العملاء</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image-wrapper">
+                <div class="hero-circle-bg"></div>
+                <div class="hero-img-card">
+                    <img class="hero-img" src="pizza_hero.png" alt="Caruso's Hot Woodfired Pizza" loading="lazy" decoding="async">
+                    
+                    <div class="floating-badge glass-panel">
+                        <div class="fb-icon"><i class="fas fa-truck"></i></div>
+                        <div class="fb-text">
+                            <h4 data-i18n="floatingTitle">توصيل سريع</h4>
+                            <p data-i18n="floatingDesc">أسيوط وأسيوط الجديدة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Special Offers / Promos Section
+    ------------------------------------------------------------ -->
+    <section class="promos section-padding" id="promos">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-subtitle" data-i18n="promoTag">العروض الحصرية</span>
+                <h2 class="section-title" data-i18n="promoTitle">السعادة صُنعت لتُشارك</h2>
+            </div>
+            
+            <div class="promo-grid reveal-stagger">
+                <!-- Promo 1: The Triple Pizza Builder -->
+                <div class="promo-banner glass-panel">
+                    <div class="promo-banner-bg" style="background-image: url('pizza_hero.png');"></div>
+                    <div class="promo-overlay"></div>
+                    <div class="promo-content">
+                        <span class="badge badge-accent" data-i18n="promoTag">خصم التجميعات</span>
+                        <h3 data-i18n="promo3PizzaHead">عرض الـ 3 بيتزا الشهير!</h3>
+                        <p data-i18n="promo3PizzaDesc">احصل على أي 3 بيتزات من نفس الحجم بخصم ضخم جداً. مثالي للتجمعات العائلية، الأصدقاء، أو العزومات الكبيرة!</p>
+                        
+                        <div class="promo-price-tag">
+                            <span class="promo-price" data-i18n="promo3PizzaPrice">يبدأ من 240 جنيه فقط</span>
+                        </div>
+                        
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" onclick="openTripleOfferBuilder('s')" data-i18n="sizeS">صغير (240ج)</button>
+                            <button class="btn btn-accent" onclick="openTripleOfferBuilder('m')" data-i18n="sizeM">وسط (360ج)</button>
+                            <button class="btn btn-secondary" onclick="openTripleOfferBuilder('l')" data-i18n="sizeL">كبير (480ج)</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Promo 2: Happiness Burger Meal -->
+                <div class="promo-banner glass-panel" style="justify-content: flex-start;">
+                    <div class="promo-banner-bg" style="background-image: url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60');"></div>
+                    <div class="promo-overlay"></div>
+                    <div class="promo-content">
+                        <span class="badge badge-primary" data-i18n="tabBurger">وجبة كومبو</span>
+                        <h3 data-i18n="promoMealHead">وجبة برجر السعادة</h3>
+                        <p data-i18n="promoMealDesc">اختر برجر كاروسوز المفضل لديك مع البطاطس المقلية الذهبية والمتبلة ومشروب بارد ومنعش.</p>
+                        
+                        <div class="promo-price-tag">
+                            <span class="promo-price" data-i18n="promoMealPrice">115 جنيه</span>
+                            <span class="promo-price-old">150 EGP</span>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="addItemToOrder('burger-carusos')" data-i18n="btnAddToCart">أضف للسلة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Interactive Menu Grid Section
+    ------------------------------------------------------------ -->
+    <section class="menu section-padding" id="menu">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-subtitle" data-i18n="menuTag">مطبخنا الطازج</span>
+                <h2 class="section-title" data-i18n="menuTitle">قائمة طعام كاروسوز</h2>
+            </div>
+            
+            <div class="menu-tabs reveal">
+                <button class="menu-tab active" data-category="all" onclick="handleTabClick(event)">
+                    <i class="fas fa-utensils"></i> <span data-i18n="tabAll">كل الأطباق</span>
+                </button>
+                <button class="menu-tab" data-category="pizza" onclick="handleTabClick(event)">
+                    <i class="fas fa-pizza-slice"></i> <span data-i18n="tabPizza">البيتزا</span>
+                </button>
+                <button class="menu-tab" data-category="burger" onclick="handleTabClick(event)">
+                    <i class="fas fa-hamburger"></i> <span data-i18n="tabBurger">برجر فاخر</span>
+                </button>
+                <button class="menu-tab" data-category="pasta" onclick="handleTabClick(event)">
+                    <i class="fas fa-bowl-food"></i> <span data-i18n="tabPasta">مكرونات</span>
+                </button>
+                <button class="menu-tab" data-category="sandwich" onclick="handleTabClick(event)">
+                    <i class="fas fa-bread-slice"></i> <span data-i18n="tabSandwich">سندوتشات</span>
+                </button>
+                <button class="menu-tab" data-category="appetizer" onclick="handleTabClick(event)">
+                    <i class="fas fa-cookie"></i> <span data-i18n="tabAppetizer">المقبلات والإضافات</span>
+                </button>
+            </div>
+            
+            <div class="menu-grid" id="menuGrid">
+                <!-- Injected dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Table Reservation Section
+    ------------------------------------------------------------ -->
+    <section class="booking section-padding" id="booking">
+        <div class="container booking-wrapper reveal">
+            <div class="booking-info">
+                <div class="hero-tag" data-i18n="bookingTag">حجز طاولة</div>
+                <h2 class="section-title" data-i18n="bookingTitle">احجز طاولتك الفاخرة</h2>
+                <p class="hero-desc" data-i18n="bookingDesc">تخطى طوابير الانتظار. احجز طاولتك الفعلية في فرع أسيوط أو أسيوط الجديدة واستمتع بتجربة طعام متميزة وراقية.</p>
+                
+                <div class="booking-features">
+                    <div class="b-feature">
+                        <div class="b-feature-icon"><i class="fas fa-percent"></i></div>
+                        <div class="b-feature-text">
+                            <h4 data-i18n="bookingF1Head">بدون رسوم حجز</h4>
+                            <p data-i18n="bookingF1Desc">الحجز مجاني تماماً مع تأكيد فوري لحظي.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="b-feature">
+                        <div class="b-feature-icon"><i class="fas fa-chair"></i></div>
+                        <div class="b-feature-text">
+                            <h4 data-i18n="bookingF2Head">اختر الأجواء المناسبة</h4>
+                            <p data-i18n="bookingF2Desc">اختر الصالة الداخلية، التراس الزجاجي، أو طاولة الشيف.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="booking-form-card glass-panel">
+                <h3 style="margin-bottom: 24px;" data-i18n="bookingFormTitle">نموذج حجز طاولة</h3>
+                <form id="bookingForm" class="booking-form" onsubmit="processTableBooking(event)">
+                    <div class="form-group full-width">
+                        <label for="bookBranch" data-i18n="lblBranch">اختر الفرع</label>
+                        <select id="bookBranch" class="form-control">
+                            <option value="assiut" data-i18n="branchOption1">أسيوط (أرض الملاعب - أمام المحافظة)</option>
+                            <option value="new_assiut" data-i18n="branchOption2">أسيوط الجديدة (منطقة نادي وادي دجلة)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookGuests" data-i18n="lblGuests">عدد الأفراد</label>
+                        <input type="number" id="bookGuests" class="form-control" min="1" max="15" placeholder="4" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookDate" data-i18n="lblDate">تاريخ الحجز</label>
+                        <input type="date" id="bookDate" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookTime" data-i18n="lblTime">توقيت الحجز</label>
+                        <input type="time" id="bookTime" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bookZone" data-i18n="lblZone">منطقة الجلوس المفضلة</label>
+                        <select id="bookZone" class="form-control">
+                            <option value="indoor" data-i18n="zoneOption1">الصالة الداخلية الدافئة</option>
+                            <option value="patio" data-i18n="zoneOption2">التراس الزجاجي / الهواء الطلق</option>
+                            <option value="counter" data-i18n="zoneOption3">منضدة الشيف (مشاهدة المطبخ مباشرة)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="bookSpecial" data-i18n="lblSpecial">طلبات خاصة / ملاحظات</label>
+                        <textarea id="bookSpecial" class="form-control" rows="3" placeholder="..."></textarea>
+                    </div>
+                    
+                    <button type="submit" id="bookSubmitBtn" class="btn btn-primary full-width booking-btn" data-i18n="btnSubmitBooking">تأكيد الحجز الآن</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Behind the Taste Story Section
+    ------------------------------------------------------------ -->
+    <section class="about section-padding" id="about">
+        <div class="container about-wrapper">
+            <div class="about-content">
+                <div class="hero-tag" data-i18n="aboutTag">سر الصنعة والمذاق</div>
+                <h2 class="section-title" data-i18n="aboutTitle">الشغف والحرفية في مطبخ كاروسوز</h2>
+                <p class="hero-desc" data-i18n="aboutDesc">تأسس كاروسوز بشغف كبير لتقديم أكل الشارع بطريقة راقية واحترافية. نحن لا نقبل بالحلول السهلة؛ فبدءاً من تخمير العجينة لمدة 72 ساعة لراحة معدتك، وحتى اختيار الطماطم الإيطالية الفاخرة والأعشاب الطازجة، كل تفصيل يصنع فرقاً.</p>
+                
+                <div class="about-pillars">
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <h4 data-i18n="pillar1Head">تخمير بطيء 72 ساعة</h4>
+                        <p data-i18n="pillar1Desc">عجينة خفيفة للغاية، هشة، ومحمرة بحرفية على أطراف الفرن.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-leaf"></i></div>
+                        <h4 data-i18n="pillar2Head">مكونات ممتازة ونقية</h4>
+                        <p data-i18n="pillar2Desc">موتزاريلا طبيعية 100%، طماطم سان مارزانو، وأعشاب طازجة.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-fire"></i></div>
+                        <h4 data-i18n="pillar3Head">خبراء البرجر المشوي</h4>
+                        <p data-i18n="pillar3Desc">برجر مصنوع من لحم بقري صافي بلدي 100%، مشوي بقشرة مقرمشة مثالية.</p>
+                    </div>
+                    <div class="pillar-card">
+                        <div class="pillar-icon"><i class="fas fa-blender"></i></div>
+                        <h4 data-i18n="pillar4Head">باستا يدوية طازجة</h4>
+                        <p data-i18n="pillar4Desc">نعد المكرونة طازجة يومياً ونطهوها بصلصات غنية ومطهية ببطء.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-gallery reveal-stagger">
+                <div class="gallery-img-card span-2">
+                    <img src="pizza_hero.png" alt="Artisanal Pizzas">
+                </div>
+                <div class="gallery-img-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60" alt="Juicy Burger">
+                </div>
+                <div class="gallery-img-card">
+                    <img src="https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=500&auto=format&fit=crop&q=60" alt="Creamy Pasta">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Branches & Location Section
+    ------------------------------------------------------------ -->
+    <section class="branches section-padding" id="branches">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-subtitle" data-i18n="branchesTag">فروعنا</span>
+                <h2 class="section-title" data-i18n="branchesTitle">تفضل بزيارتنا في الفروع</h2>
+            </div>
+            
+            <div class="branches-grid reveal-stagger">
+                <!-- Branch 1: Assiut Main Branch -->
+                <div class="branch-card glass-panel">
+                    <div class="branch-header">
+                        <div class="branch-icon"><i class="fas fa-shop"></i></div>
+                        <div class="branch-name">
+                            <h3 data-i18n="branchOption1">أسيوط (أرض الملاعب - أمام المحافظة)</h3>
+                            <p data-i18n="hours24">مفتوح على مدار 24 ساعة / 7 أيام</p>
+                        </div>
+                    </div>
+                    
+                    <div class="branch-details">
+                        <div class="bd-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p><span data-i18n="navBranches">العنوان:</span> <span data-i18n="branch1Address">أرض الملاعب، أمام محافظة أسيوط</span></p>
+                        </div>
+                        <div class="bd-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <p><span>التليفون:</span> <span class="text-gradient-red" style="-webkit-text-fill-color: initial; color: var(--color-primary); font-weight: bold; font-size: 16px;">01229746767</span></p>
+                        </div>
+                        <div class="bd-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <p><span>الواتساب للطلبات:</span> <span style="font-weight: 600;">+20 12 29746767</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="branch-actions">
+                        <a href="tel:01229746767" class="btn btn-primary"><i class="fas fa-phone"></i> <span data-i18n="btnCallBranch">اتصل بالفرع</span></a>
+                        <a href="https://maps.google.com/?q=اسيوط+ارض+الملاعب+امام+المحافظة" target="_blank" class="btn btn-secondary"><i class="fas fa-map"></i> <span data-i18n="btnViewMap">عرض الخريطة</span></a>
+                    </div>
+                </div>
+                
+                <!-- Branch 2: New Assiut Branch -->
+                <div class="branch-card glass-panel">
+                    <div class="branch-header">
+                        <div class="branch-icon"><i class="fas fa-store-alt"></i></div>
+                        <div class="branch-name">
+                            <h3 data-i18n="branchOption2">أسيوط الجديدة (منطقة نادي وادي دجلة)</h3>
+                            <p data-i18n="hours24">مفتوح على مدار 24 ساعة / 7 أيام</p>
+                        </div>
+                    </div>
+                    
+                    <div class="branch-details">
+                        <div class="bd-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p><span data-i18n="navBranches">العنوان:</span> <span data-i18n="branch2Address">مدينة أسيوط الجديدة، داخل منطقة نادي وادي دجلة</span></p>
+                        </div>
+                        <div class="bd-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <p><span>التليفون:</span> <span class="text-gradient-red" style="-webkit-text-fill-color: initial; color: var(--color-primary); font-weight: bold; font-size: 16px;">01558208008 / 01229746767</span></p>
+                        </div>
+                        <div class="bd-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <p><span>الواتساب للطلبات:</span> <span style="font-weight: 600;">+20 12 29746767</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="branch-actions">
+                        <a href="tel:01558208008" class="btn btn-primary"><i class="fas fa-phone"></i> <span data-i18n="btnCallBranch">اتصل بالفرع</span></a>
+                        <a href="https://maps.google.com/?q=اسيوط+الجديدة+نادي+وادي+دجله" target="_blank" class="btn btn-secondary"><i class="fas fa-map"></i> <span data-i18n="btnViewMap">عرض الخريطة</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------------------------
+         Footer
+    ------------------------------------------------------------ -->
+    <footer>
+        <div class="container footer-grid reveal">
+            <div class="footer-info">
+                <a href="#" class="footer-logo">
+                    <img class="footer-logo-img" src="logo.jpg" alt="Carusos Logo">
+                    <span class="footer-logo-text" data-i18n="logoText">كاروسو<span>ز</span></span>
+                </a>
+                <p class="footer-desc" data-i18n="heroDesc">استمتع بمذاق البيتزا الإيطالية الفاخرة المخبوزة في فرن الحطب، والبرجر المشوي بعناية، والباستا الطازجة المصنوعة يدوياً بأجود المكونات في أسيوط.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/1ADAJTjPXo/" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/201229746767" target="_blank" rel="noopener" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4 data-i18n="navMenu">قائمة الطعام</h4>
+                <ul>
+                    <li><a href="#menu" data-i18n="tabPizza">البيتزا الإيطالية</a></li>
+                    <li><a href="#menu" data-i18n="tabBurger">البرجر الفاخر</a></li>
+                    <li><a href="#menu" data-i18n="tabPasta">مكرونات ووايت صوص</a></li>
+                    <li><a href="#menu" data-i18n="tabSandwich">سندوتشات كريسبي</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4 data-i18n="navStory">روابط سريعة</h4>
+                <ul>
+                    <li><a href="#hero" data-i18n="logoText">الرئيسية</a></li>
+                    <li><a href="#about" data-i18n="navStory">سر التخمير</a></li>
+                    <li><a href="#branches" data-i18n="navBranches">فروع أسيوط</a></li>
+                    <li><a href="#booking" data-i18n="navBook">احجز طاولة مجاناً</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4 data-i18n="navBranches">تواصل معنا</h4>
+                <div class="footer-contact">
+                    <div class="fc-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <p>01229746767 / 01558208008</p>
+                    </div>
+                    <div class="fc-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <p><a href="https://wa.me/201229746767" target="_blank" rel="noopener">01229746767</a></p>
+                    </div>
+                    <div class="fc-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>orders@carusos-eg.com</p>
+                    </div>
+                    <div class="fc-item">
+                        <i class="fas fa-clock"></i>
+                        <p data-i18n="hours24">نعمل 24 ساعة / طوال أيام الأسبوع</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <div class="copyright">
+                <p>&copy; 2026 مطعم كاروسوز Carusos. كل الحقوق محفوظة.</p>
+            </div>
+            <div>
+                <p>صنع بكل حب <i class="fas fa-heart" style="color: var(--color-primary);"></i> لعشاق البيتزا والبرجر في أسيوط</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/201229746767" target="_blank" rel="noopener" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+        واتساب
+    </a>
+
+    <!-- -----------------------------------------------------------
+         Shopping Cart Sidebar Panel (Floating Right)
+    ------------------------------------------------------------ -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCartSidebar()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-basket"></i> <span data-i18n="cartTitle">سلة المشتريات</span></h3>
+            <button class="cart-close-btn" onclick="toggleCartSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="cart-items-container" id="cartItems">
+            <!-- Filled dynamically by app.js -->
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-summary-row">
+                <span data-i18n="cartSubtotal">المجموع الفرعي</span>
+                <span id="cartSubtotalVal">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row">
+                <span data-i18n="cartVat">ضريبة القيمة المضافة (14%)</span>
+                <span id="cartVatVal">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row">
+                <span data-i18n="cartDelivery">رسوم التوصيل</span>
+                <span id="cartDeliveryVal">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row total">
+                <span data-i18n="cartTotal">الإجمالي الكلي</span>
+                <span id="cartTotalVal">0.00 EGP</span>
+            </div>
+            
+            <button class="btn btn-primary cart-checkout-btn" onclick="handleCheckoutBtn()" data-i18n="btnCheckout">الانتقال للدفع وتأكيد الطلب</button>
+        </div>
+    </div>
+
+    <!-- -----------------------------------------------------------
+         Modal 1: Order Checkout Details Form
+    ------------------------------------------------------------ -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-backdrop" onclick="closeModal('checkoutModal')"></div>
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3 data-i18n="checkoutTitle">إتمام تفاصيل الطلب</h3>
+                <button class="modal-close-btn" onclick="closeModal('checkoutModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm" class="booking-form" onsubmit="processCheckoutOrder(event)">
+                    <div class="form-group full-width">
+                        <label for="chkFullName" data-i18n="lblFullName">الاسم الكامل</label>
+                        <input type="text" id="chkFullName" class="form-control" required placeholder="محمد أحمد">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="chkPhone" data-i18n="lblPhone">رقم الهاتف (نشط لاستلام رسائل التأكيد)</label>
+                        <input type="tel" id="chkPhone" class="form-control" required placeholder="0122XXXXXXX" pattern="^[0][1][0125][0-9]{8}$">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="chkBranch" data-i18n="lblBranch">اختر فرع التوصيل الأقرب إليك</label>
+                        <select id="chkBranch" class="form-control">
+                            <option value="assiut" data-i18n="branchOption1">أسيوط (أرض الملاعب - أمام المحافظة)</option>
+                            <option value="new_assiut" data-i18n="branchOption2">أسيوط الجديدة (منطقة نادي وادي دجلة)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="chkAddress" data-i18n="lblAddress">العنوان التفصيلي للتوصيل</label>
+                        <textarea id="chkAddress" class="form-control" rows="3" required placeholder="اسم الشارع، رقم البرج، الدور، الشقة، معلم مميز..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width booking-btn" data-i18n="btnConfirmOrder">تأكيد الطلب والدفع عند الاستلام</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- -----------------------------------------------------------
+         Modal 2: Success Order Notification Receipt Ticket
+    ------------------------------------------------------------ -->
+    <div class="modal" id="successOrderModal">
+        <div class="modal-backdrop" onclick="closeModal('successOrderModal')"></div>
+        <div class="modal-container glass-panel" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 data-i18n="orderSuccessHead">تم تسجيل طلبك بنجاح!</h3>
+                <button class="modal-close-btn" onclick="closeModal('successOrderModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-wrapper">
+                    <div class="ticket-header">
+                        <div class="ticket-success-icon"><i class="fas fa-check"></i></div>
+                        <h4 data-i18n="orderSuccessHead">تم تأكيد الطلب بنجاح</h4>
+                        <span class="ticket-code" id="ticketOrderId">CR-523164</span>
+                    </div>
+                    <div class="ticket-details">
+                        <div class="td-row">
+                            <span data-i18n="lblFullName">الاسم الكامل:</span>
+                            <span id="ticketCustName">محمد أحمد</span>
+                        </div>
+                        <div class="td-row">
+                            <span data-i18n="lblPhone">رقم الهاتف:</span>
+                            <span id="ticketCustPhone">01229746767</span>
+                        </div>
+                        <div class="td-row">
+                            <span data-i18n="orderBranch">الفرع المحضر للطلب:</span>
+                            <span id="ticketBranch">فرع المحافظة</span>
+                        </div>
+                        <div class="td-row" style="flex-direction: column; gap: 4px;">
+                            <span data-i18n="lblAddress">العنوان التفصيلي:</span>
+                            <span id="ticketAddress" style="font-weight: 500; font-size: 13px; color: var(--color-text-muted);">شارع الجمهورية - برج الصفا</span>
+                        </div>
+                        <div class="td-row" style="border-top: 1px dashed var(--color-border); padding-top: 12px; margin-top: 6px;">
+                            <span data-i18n="orderTotalText" style="font-weight: bold; color: var(--color-white);">المبلغ عند الاستلام:</span>
+                            <span id="ticketTotalAmount" style="font-weight: bold; color: var(--color-primary); font-size: 16px;">350.00 EGP</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary full-width booking-btn" onclick="closeModal('successOrderModal')" data-i18n="btnDone">ممتاز جداً</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- -----------------------------------------------------------
+         Modal 3: Success Table Booking Ticket
+    ------------------------------------------------------------ -->
+    <div class="modal" id="successBookingModal">
+        <div class="modal-backdrop" onclick="closeModal('successBookingModal')"></div>
+        <div class="modal-container glass-panel" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 data-i18n="bookSuccessHead">تم تأكيد حجز الطاولة!</h3>
+                <button class="modal-close-btn" onclick="closeModal('successBookingModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-wrapper">
+                    <div class="ticket-header">
+                        <div class="ticket-success-icon" style="background-color: rgba(243, 156, 18, 0.1); color: var(--color-accent);"><i class="fas fa-chair"></i></div>
+                        <h4 data-i18n="bookSuccessHead">تذكرة الحجز الرقمية</h4>
+                        <span class="ticket-code" id="resCodeTicket" style="color: var(--color-accent); background: rgba(243, 156, 18, 0.08);">RES-4523</span>
+                    </div>
+                    <div class="ticket-details">
+                        <div class="td-row">
+                            <span data-i18n="lblBranch">الفرع المحجوز:</span>
+                            <span id="resBranchTicket">أسيوط - أرض الملاعب</span>
+                        </div>
+                        <div class="td-row">
+                            <span data-i18n="bookTicketGuests">عدد الأفراد:</span>
+                            <span id="resGuestsTicket">4 أفراد</span>
+                        </div>
+                        <div class="td-row">
+                            <span data-i18n="lblDate">التاريخ والوقت:</span>
+                            <span id="resDateTicket">2026-05-24 | 08:30 PM</span>
+                        </div>
+                        <div class="td-row">
+                            <span data-i18n="bookTicketZone">منطقة الجلوس:</span>
+                            <span id="resZoneTicket">الصالة الداخلية</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-accent full-width booking-btn" onclick="closeModal('successBookingModal')" data-i18n="btnDone">ممتاز جداً</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- -----------------------------------------------------------
+         Modal 4: Custom Triple Pizza Offer Builder Modal
+    ------------------------------------------------------------ -->
+    <div class="modal" id="tripleOfferModal">
+        <div class="modal-backdrop" onclick="closeModal('tripleOfferModal')"></div>
+        <div class="modal-container glass-panel" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3><span data-i18n="offerModalTitle">ركّب عرض الـ 3 بيتزا التفاعلي</span> <span id="offerModalSizeLabel" style="color: var(--color-primary);"></span></h3>
+                <button class="modal-close-btn" onclick="closeModal('tripleOfferModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="offer-builder-grid">
+                    <div class="offer-step">
+                        <h4 data-i18n="offerStep1">1. اختر البيتزا الأولى</h4>
+                        <div class="offer-pizza-select" id="offerStep1Pizzas">
+                            <!-- Pizza cards injected by app.js -->
+                        </div>
+                    </div>
+                    <div class="offer-step">
+                        <h4 data-i18n="offerStep2">2. اختر البيتزا الثانية</h4>
+                        <div class="offer-pizza-select" id="offerStep2Pizzas">
+                            <!-- Pizza cards injected by app.js -->
+                        </div>
+                    </div>
+                    <div class="offer-step">
+                        <h4 data-i18n="offerStep3">3. اختر البيتزا الثالثة</h4>
+                        <div class="offer-pizza-select" id="offerStep3Pizzas">
+                            <!-- Pizza cards injected by app.js -->
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary full-width booking-btn" onclick="confirmTripleOffer()" data-i18n="btnConfirmOffer">إضافة باقة الـ 3 بيتزا للسلة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="animations.js"></script>
+</body>
+</html>

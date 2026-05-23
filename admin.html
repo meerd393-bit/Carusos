@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0c0c0e">
+    <meta name="robots" content="noindex, nofollow">
+    <title>لوحة تحكم كاروسوز | Admin Dashboard</title>
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ─── RESET & BASE ─── */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #D42F2B;
+            --primary-dim: rgba(212, 47, 43, 0.12);
+            --accent: #F39C12;
+            --green: #2ecc71;
+            --green-dim: rgba(46, 204, 113, 0.12);
+            --red-dim: rgba(212, 47, 43, 0.12);
+            --blue: #3b82f6;
+            --blue-dim: rgba(59, 130, 246, 0.12);
+            --bg: #0c0c0e;
+            --surface: #141417;
+            --card: #1c1c22;
+            --card-h: #25252e;
+            --border: rgba(255, 255, 255, 0.07);
+            --text: #f5f5f7;
+            --muted: #9e9ea7;
+            --sidebar-w: 260px;
+            --header-h: 64px;
+        }
+
+        html {
+            font-size: 15px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 47, 43, 0.4);
+            border-radius: 99px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+            animation: fadeUp .5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 0 30px rgba(212, 47, 43, 0.4);
+        }
+
+        .login-box h1 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .login-box h1 span {
+            color: var(--primary);
+        }
+
+        .login-box p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        .login-input-wrap {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .login-input-wrap i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            padding: 14px 44px 14px 16px;
+            outline: none;
+            transition: border-color .25s, box-shadow .25s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 47, 43, 0.15);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 15px;
+            cursor: pointer;
+            transition: background .2s, transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 20px rgba(212, 47, 43, 0.3);
+            margin-top: 4px;
+        }
+
+        .login-btn:hover {
+            background: #b82522;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(212, 47, 43, 0.45);
+        }
+
+        .login-error {
+            color: var(--primary);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ─── LAYOUT ─── */
+        #appShell {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: calc(100% - var(--sidebar-w));
+            height: var(--header-h);
+            background: rgba(14, 14, 18, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            z-index: 100;
+            transition: width .3s ease;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .topbar-breadcrumb {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .topbar-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .topbar-btn.danger:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform .3s ease;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .sidebar-brand-text {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .sidebar-brand-text span {
+            color: var(--primary);
+        }
+
+        .sidebar-brand-sub {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 10px 10px 6px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all .2s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .nav-link i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .nav-link:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .nav-link.active {
+            background: var(--primary-dim);
+            color: var(--primary);
+            border-color: rgba(212, 47, 43, 0.2);
+        }
+
+        .nav-badge {
+            margin-right: auto;
+            background: var(--primary);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+
+        .sidebar-footer {
+            padding: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-right: var(--sidebar-w);
+            padding-top: var(--header-h);
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            padding: 28px;
+            animation: fadeUp .35s ease both;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ─── STATS CARDS ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform .25s, border-color .25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.red {
+            background: var(--red-dim);
+            color: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .stat-icon.blue {
+            background: var(--blue-dim);
+            color: var(--blue);
+        }
+
+        .stat-icon.gold {
+            background: rgba(243, 156, 18, .12);
+            color: var(--accent);
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        /* ─── SECTION PANEL ─── */
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* ─── TABLE ─── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: right;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0, 0, 0, .15);
+        }
+
+        .data-table td {
+            padding: 14px 14px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, .02);
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-badge.pending {
+            background: rgba(243, 156, 18, .12);
+            color: var(--accent);
+        }
+
+        .status-badge.preparing {
+            background: var(--blue-dim);
+            color: var(--blue);
+        }
+
+        .status-badge.delivered {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .status-badge.cancelled {
+            background: var(--red-dim);
+            color: var(--primary);
+        }
+
+        /* ─── CONTROLS ─── */
+        .ctrl-select,
+        .ctrl-input {
+            background: rgba(0, 0, 0, .25);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .ctrl-select:focus,
+        .ctrl-input:focus {
+            border-color: var(--primary);
+        }
+
+        .ctrl-select option {
+            background: var(--surface);
+        }
+
+        .btn-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all .2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #b82522;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: rgba(212, 47, 43, .15);
+            color: var(--primary);
+        }
+
+        .btn-danger:hover {
+            background: rgba(212, 47, 43, .25);
+        }
+
+        .btn-success {
+            background: rgba(46, 204, 113, .15);
+            color: var(--green);
+        }
+
+        .btn-success:hover {
+            background: rgba(46, 204, 113, .25);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ─── SETTINGS FORM ─── */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .field-input {
+            background: rgba(0, 0, 0, .2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 14px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .field-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 47, 43, .12);
+        }
+
+        .field-hint {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .save-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .save-feedback {
+            font-size: 13px;
+            color: var(--green);
+            display: none;
+        }
+
+        /* ─── MENU PRICE EDITOR ─── */
+        .price-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-row-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .price-row-cat {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .price-input {
+            background: rgba(0, 0, 0, .2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 10px;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            transition: border-color .2s;
+        }
+
+        .price-input:focus {
+            border-color: var(--primary);
+        }
+
+        .price-input[disabled] {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        /* ─── ORDER DETAIL MODAL ─── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(0, 0, 0, .75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(.95);
+            transition: transform .25s;
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-hd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-hd h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-bd {
+            padding: 20px;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-row-label {
+            color: var(--muted);
+        }
+
+        .order-total {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            opacity: .2;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ─── TOAST ─── */
+        .admin-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 9999;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--green);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        .admin-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .admin-toast i {
+            color: var(--green);
+            font-size: 16px;
+        }
+
+        .admin-toast.warn {
+            border-right-color: var(--accent);
+        }
+
+        .admin-toast.warn i {
+            color: var(--accent);
+        }
+
+        /* ─── FILTER BAR ─── */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-row {
+                grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --sidebar-w: 0px;
+            }
+
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                width: 100%;
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 16px;
+            }
+
+            .price-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ════════════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════════ -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <img src="logo.jpg" alt="Carusos" class="login-logo">
+            <h1>كاروسو<span>ز</span></h1>
+            <p>لوحة تحكم المدير — أدخل كلمة المرور للمتابعة</p>
+            <form id="loginForm">
+                <div class="login-input-wrap">
+                    <i class="fas fa-lock"></i>
+                    <input id="passInput" type="password" class="login-input" placeholder="كلمة المرور"
+                        autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt" style="margin-left:6px;"></i> دخول للوحة التحكم
+                </button>
+                <p id="loginError" class="login-error"><i class="fas fa-exclamation-circle"></i> كلمة المرور غير صحيحة
+                </p>
+            </form>
+            <p style="margin-top:20px;font-size:11px;color:var(--muted);">
+                🔒 هذه الصفحة خاصة بالإدارة فقط
+            </p>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+     APP SHELL
+════════════════════════════════════════════════ -->
+    <div id="appShell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="logo.jpg" alt="Carusos">
+                <div>
+                    <div class="sidebar-brand-text">كاروسو<span>ز</span></div>
+                    <div class="sidebar-brand-sub">لوحة تحكم المدير</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-section-label">الرئيسية</div>
+                <div class="nav-link active" data-page="overview" onclick="switchPage('overview')">
+                    <i class="fas fa-chart-pie"></i> نظرة عامة
+                </div>
+                <div class="nav-link" data-page="orders" onclick="switchPage('orders')">
+                    <i class="fas fa-shopping-bag"></i> إدارة الطلبات
+                    <span class="nav-badge" id="pendingBadge">0</span>
+                </div>
+
+                <div class="sidebar-section-label">الإعدادات</div>
+                <div class="nav-link" data-page="prices" onclick="switchPage('prices')">
+                    <i class="fas fa-tags"></i> أسعار المنيو
+                </div>
+                <div class="nav-link" data-page="settings" onclick="switchPage('settings')">
+                    <i class="fas fa-sliders-h"></i> الضريبة والشحن
+                </div>
+                <div class="nav-link" data-page="account" onclick="switchPage('account')">
+                    <i class="fas fa-shield-alt"></i> كلمة المرور
+                </div>
+
+                <div class="sidebar-section-label">روابط سريعة</div>
+                <a class="nav-link" href="index.html" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> فتح الموقع
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="doLogout()">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- TOPBAR -->
+        <div class="topbar" id="topbar">
+            <div class="topbar-left">
+                <button class="topbar-btn" onclick="toggleSidebar()" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <div class="topbar-title" id="pageTitle">نظرة عامة</div>
+                    <div class="topbar-breadcrumb">لوحة تحكم كاروسوز</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn" onclick="refreshAll()">
+                    <i class="fas fa-sync-alt"></i> تحديث
+                </button>
+                <img src="logo.jpg" alt="Admin" class="admin-avatar">
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <main class="main-content">
+
+            <!-- ── OVERVIEW ── -->
+            <div class="page active" id="page-overview">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-shopping-bag"></i></div>
+                        <div>
+                            <div class="stat-value" id="s-total">0</div>
+                            <div class="stat-label">إجمالي الطلبات</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <div class="stat-value" id="s-pending">0</div>
+                            <div class="stat-label">قيد التجهيز</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <div class="stat-value" id="s-delivered">0</div>
+                            <div class="stat-label">تم التوصيل</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-coins"></i></div>
+                        <div>
+                            <div class="stat-value" id="s-revenue" style="font-size:18px;">0 ج</div>
+                            <div class="stat-label">إجمالي الإيرادات</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-fire"></i> أحدث الطلبات</div>
+                        <button class="btn-sm btn-ghost" onclick="switchPage('orders')">عرض الكل</button>
+                    </div>
+                    <div class="panel-body" id="recentOrders" style="padding:0;">
+                        <div class="empty-state"><i class="fas fa-box-open"></i>
+                            <p>لا توجد طلبات بعد</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><i class="fas fa-percentage"></i> إعدادات الضريبة والشحن</div>
+                        </div>
+                        <div class="panel-body">
+                            <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;">
+                                <div style="display:flex;justify-content:space-between;">
+                                    <span style="color:var(--muted);">الضريبة المضافة</span>
+                                    <span id="ovVat" style="font-weight:700;color:var(--accent);">14%</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;">
+                                    <span style="color:var(--muted);">رسوم التوصيل</span>
+                                    <span id="ovDelivery" style="font-weight:700;color:var(--primary);">30 ج</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;">
+                                    <span style="color:var(--muted);">الحد الأدنى للطلب</span>
+                                    <span id="ovMinOrder" style="font-weight:700;">0 ج</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><i class="fas fa-info-circle"></i> معلومات النظام</div>
+                        </div>
+                        <div class="panel-body">
+                            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--muted);">
+                                <div>📦 البيانات محفوظة محلياً على هذا الجهاز</div>
+                                <div>🔑 كلمة المرور الافتراضية: <code
+                                        style="color:var(--primary);background:var(--primary-dim);padding:2px 6px;border-radius:4px;">carusos2026</code>
+                                </div>
+                                <div>⚙️ يمكن تغييرها من تبويب "كلمة المرور"</div>
+                                <div>🔄 الأسعار تُحدَّث فوراً على الموقع</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ORDERS ── -->
+            <div class="page" id="page-orders">
+                <div class="filter-bar">
+                    <select class="ctrl-select" id="orderFilter" onchange="renderOrders()">
+                        <option value="all">كل الطلبات</option>
+                        <option value="pending">قيد التجهيز</option>
+                        <option value="preparing">جارٍ التحضير</option>
+                        <option value="delivered">تم التوصيل</option>
+                        <option value="cancelled">ملغي</option>
+                    </select>
+                    <input type="text" class="ctrl-input" id="orderSearch"
+                        placeholder="🔍 بحث باسم العميل أو رقم الطلب..." oninput="renderOrders()"
+                        style="flex:1;min-width:200px;">
+                    <button class="btn-sm btn-danger" onclick="clearAllOrders()">
+                        <i class="fas fa-trash"></i> حذف الكل
+                    </button>
+                </div>
+
+                <div class="panel" style="padding:0;">
+                    <table class="data-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>الفرع</th>
+                                <th>المبلغ</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── PRICES ── -->
+            <div class="page" id="page-prices">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-tags"></i> تعديل أسعار المنيو</div>
+                        <button class="btn-sm btn-primary" onclick="savePrices()">
+                            <i class="fas fa-save"></i> حفظ الأسعار
+                        </button>
+                    </div>
+                    <div class="panel-body" style="padding:0 20px;">
+                        <div
+                            style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+                            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">
+                                الصنف</div>
+                            <div style="font-size:11px;font-weight:700;color:var(--muted);text-align:center;">صغير /
+                                سنجل</div>
+                            <div style="font-size:11px;font-weight:700;color:var(--muted);text-align:center;">وسط / دبل
+                            </div>
+                            <div style="font-size:11px;font-weight:700;color:var(--muted);text-align:center;">كبير /
+                                تريبل</div>
+                        </div>
+                        <div id="pricesEditor"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SETTINGS ── -->
+            <div class="page" id="page-settings">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-percent"></i> الضريبة والشحن والإعدادات المالية</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="settings-grid">
+                            <div class="field-group">
+                                <div class="field-label">نسبة ضريبة القيمة المضافة (VAT %)</div>
+                                <input type="number" id="vatRate" class="field-input" min="0" max="100" step="0.1"
+                                    value="14">
+                                <div class="field-hint">النسبة الحالية: 14% — القيمة الافتراضية في مصر</div>
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">رسوم التوصيل (جنيه مصري)</div>
+                                <input type="number" id="deliveryFee" class="field-input" min="0" step="1" value="30">
+                                <div class="field-hint">يُضاف على كل طلب توصيل</div>
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">الحد الأدنى لقيمة الطلب (جنيه)</div>
+                                <input type="number" id="minOrder" class="field-input" min="0" step="5" value="0">
+                                <div class="field-hint">0 = لا يوجد حد أدنى</div>
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">رقم واتساب التوصيل</div>
+                                <input type="tel" id="waPhone" class="field-input" value="201229746767">
+                                <div class="field-hint">الرقم الدولي بدون +</div>
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">رسالة الطلب على واتساب</div>
+                                <input type="text" id="waMsg" class="field-input" value="لدي طلب جديد من الموقع">
+                                <div class="field-hint">الرسالة التلقائية عند الطلب</div>
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">حالة قبول الطلبات</div>
+                                <select id="ordersOpen" class="field-input">
+                                    <option value="1">✅ مفتوح — نقبل طلبات</option>
+                                    <option value="0">🔴 مغلق — لا نقبل طلبات</option>
+                                </select>
+                                <div class="field-hint">يؤثر على زر "أضف للطلب"</div>
+                            </div>
+                        </div>
+                        <div class="save-bar">
+                            <button class="btn-sm btn-primary" onclick="saveSettings()">
+                                <i class="fas fa-save"></i> حفظ الإعدادات
+                            </button>
+                            <span class="save-feedback" id="settingsFeedback"><i class="fas fa-check-circle"></i> تم
+                                الحفظ بنجاح!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-exclamation-triangle"
+                                style="color:var(--accent);"></i> منطقة الخطر</div>
+                    </div>
+                    <div class="panel-body">
+                        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">هذه الإجراءات لا يمكن التراجع
+                            عنها. تأكد قبل المتابعة.</p>
+                        <div class="btn-row">
+                            <button class="btn-sm btn-danger" onclick="clearAllOrders()">
+                                <i class="fas fa-trash"></i> حذف جميع الطلبات
+                            </button>
+                            <button class="btn-sm btn-danger" onclick="resetPrices()">
+                                <i class="fas fa-undo"></i> إعادة أسعار المنيو للافتراضي
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ACCOUNT ── -->
+            <div class="page" id="page-account">
+                <div class="panel" style="max-width:480px;">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-key"></i> تغيير كلمة المرور</div>
+                    </div>
+                    <div class="panel-body">
+                        <div style="display:flex;flex-direction:column;gap:14px;">
+                            <div class="field-group">
+                                <div class="field-label">كلمة المرور الحالية</div>
+                                <input type="password" id="oldPass" class="field-input"
+                                    placeholder="أدخل كلمة المرور الحالية">
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">كلمة المرور الجديدة</div>
+                                <input type="password" id="newPass" class="field-input" placeholder="كلمة مرور قوية">
+                            </div>
+                            <div class="field-group">
+                                <div class="field-label">تأكيد كلمة المرور الجديدة</div>
+                                <input type="password" id="confirmPass" class="field-input"
+                                    placeholder="أعد كتابة كلمة المرور">
+                            </div>
+                            <div class="save-bar">
+                                <button class="btn-sm btn-primary" onclick="changePassword()">
+                                    <i class="fas fa-save"></i> تغيير كلمة المرور
+                                </button>
+                                <span class="save-feedback" id="passFeedback"><i class="fas fa-check-circle"></i> تم
+                                    التغيير!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ORDER DETAIL MODAL -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box">
+            <div class="modal-hd">
+                <h3>تفاصيل الطلب</h3>
+                <button class="modal-close" onclick="closeOrderModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-bd" id="orderModalBody"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="admin-toast" id="adminToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="adminToastMsg">تم الحفظ</span>
+    </div>
+
+    <script>
+        /* ═══════════════════════════════════════════════════
+           CONSTANTS & KEYS
+        ═══════════════════════════════════════════════════ */
+        const AUTH_KEY = 'carusos_admin_auth';
+        const PASS_KEY = 'carusos_admin_pass';
+        const ORDERS_KEY = 'carusos_orders';
+        const SETTINGS_KEY = 'carusos_settings';
+        const PRICES_KEY = 'carusos_prices';
+
+        const DEFAULT_PASS = 'carusos2026';
+
+        /* Default menu prices (matches app.js MENU_ITEMS) */
+        const DEFAULT_PRICES = {
+            'pizza-margherita': { s: 95, m: 130, l: 175 },
+            'pizza-ranch': { s: 130, m: 175, l: 225 },
+            'pizza-carusos': { s: 140, m: 185, l: 235 },
+            'pizza-pepperoni': { s: 120, m: 160, l: 210 },
+            'pizza-fourcheese': { s: 125, m: 170, l: 215 },
+            'burger-classic': { s: 100, m: 130, l: 160 },
+            'burger-carusos': { s: 130, m: 160, l: 190 },
+            'pasta-alfredo': { single: 110 },
+            'pasta-chicken-mush': { single: 100 },
+            'sandwich-crispy': { s: 105, m: 140 },
+            'sandwich-sausage': { s: 90, m: 115 },
+            'side-fries-cheese': { single: 50 },
+            'side-mozzarella-sticks': { single: 50 }
+        };
+
+        const ITEM_NAMES_AR = {
+            'pizza-margherita': 'بيتزا مارجريتا',
+            'pizza-ranch': 'بيتزا تشيكن رانش',
+            'pizza-carusos': 'بيتزا كاروسوز الخاصة',
+            'pizza-pepperoni': 'بيتزا ببروني سوبريم',
+            'pizza-fourcheese': 'بيتزا فور تشيز',
+            'burger-classic': 'كلاسيك برجر لحم مشوي',
+            'burger-carusos': 'برجر كاروسوز المميز',
+            'pasta-alfredo': 'مكرونة تشيكن الفريدو',
+            'pasta-chicken-mush': 'بنا تشيكن مشروم وايت صوص',
+            'sandwich-crispy': 'سندوتش تشيكن كريسبي',
+            'sandwich-sausage': 'سندوتش سجق كاروسوز',
+            'side-fries-cheese': 'بطاطس مقلية بالجبنة',
+            'side-mozzarella-sticks': 'أصابع الموزاريلا'
+        };
+
+        const ITEM_CATS = {
+            'pizza-margherita': 'بيتزا', 'pizza-ranch': 'بيتزا', 'pizza-carusos': 'بيتزا', 'pizza-pepperoni': 'بيتزا', 'pizza-fourcheese': 'بيتزا',
+            'burger-classic': 'برجر', 'burger-carusos': 'برجر',
+            'pasta-alfredo': 'باستا', 'pasta-chicken-mush': 'باستا',
+            'sandwich-crispy': 'سندوتش', 'sandwich-sausage': 'سندوتش',
+            'side-fries-cheese': 'إضافات', 'side-mozzarella-sticks': 'إضافات'
+        };
+
+        /* ═══════════════════════════════════════════════════
+           HELPERS & SERVER SYNC
+         ═══════════════════════════════════════════════════ */
+        function isServerMode() {
+            return window.location.protocol.startsWith('http');
+        }
+
+        async function syncFromServer() {
+            if (!isServerMode()) return;
+            try {
+                const response = await fetch('/api/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.orders) localStorage.setItem(ORDERS_KEY, JSON.stringify(data.orders));
+                    if (data.settings) localStorage.setItem(SETTINGS_KEY, JSON.stringify(data.settings));
+                    if (data.prices) localStorage.setItem(PRICES_KEY, JSON.stringify(data.prices));
+                }
+            } catch (e) {
+                console.warn('Could not sync database from local Node server:', e);
+            }
+        }
+
+        async function syncToServer() {
+            if (!isServerMode()) return;
+            try {
+                const payload = {
+                    orders: getOrders(),
+                    settings: getSettings(),
+                    prices: getPrices()
+                };
+                await fetch('/api/data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error('Could not save database changes to local Node server:', e);
+            }
+        }
+
+        function getPass() { return localStorage.getItem(PASS_KEY) || DEFAULT_PASS; }
+        function getOrders() { try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); } catch (e) { return []; } }
+        function saveOrders(o) {
+            localStorage.setItem(ORDERS_KEY, JSON.stringify(o));
+            syncToServer();
+        }
+        function getSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) { return {}; } }
+        function saveSettingsData(s) {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+            syncToServer();
+        }
+        function getPrices() { try { return JSON.parse(localStorage.getItem(PRICES_KEY) || '{}'); } catch (e) { return {}; } }
+        function savePricesData(p) {
+            localStorage.setItem(PRICES_KEY, JSON.stringify(p));
+            syncToServer();
+        }
+
+        function getEffectivePrices() {
+            const saved = getPrices();
+            const merged = {};
+            for (const id in DEFAULT_PRICES) {
+                merged[id] = saved[id] ? Object.assign({}, DEFAULT_PRICES[id], saved[id]) : Object.assign({}, DEFAULT_PRICES[id]);
+            }
+            return merged;
+        }
+
+        function showToast(msg, type = 'ok') {
+            const t = document.getElementById('adminToast');
+            const m = document.getElementById('adminToastMsg');
+            m.textContent = msg;
+            t.className = 'admin-toast' + (type === 'warn' ? ' warn' : '');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function showFeedback(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.style.display = 'inline-flex';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           AUTH
+         ═══════════════════════════════════════════════════ */
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const val = document.getElementById('passInput').value;
+            if (val === getPass()) {
+                sessionStorage.setItem(AUTH_KEY, '1');
+                document.getElementById('loginError').style.display = 'none';
+                await bootDashboard();
+            } else {
+                const err = document.getElementById('loginError');
+                err.style.display = 'block';
+                document.getElementById('passInput').value = '';
+                document.getElementById('passInput').focus();
+            }
+        });
+
+        function doLogout() {
+            sessionStorage.removeItem(AUTH_KEY);
+            location.reload();
+        }
+
+        function changePassword() {
+            const old = document.getElementById('oldPass').value;
+            const nw = document.getElementById('newPass').value;
+            const cf = document.getElementById('confirmPass').value;
+            if (old !== getPass()) { showToast('كلمة المرور الحالية غير صحيحة', 'warn'); return; }
+            if (!nw || nw.length < 6) { showToast('كلمة المرور الجديدة قصيرة جداً (6 أحرف على الأقل)', 'warn'); return; }
+            if (nw !== cf) { showToast('كلمتا المرور غير متطابقتين', 'warn'); return; }
+            localStorage.setItem(PASS_KEY, nw);
+            document.getElementById('oldPass').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('confirmPass').value = '';
+            showFeedback('passFeedback');
+            showToast('تم تغيير كلمة المرور بنجاح ✅');
+        }
+
+        /* ═══════════════════════════════════════════════════
+           BOOT
+         ═══════════════════════════════════════════════════ */
+        async function bootDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appShell').style.display = 'block';
+
+            // Fetch live settings and database from Node server if running
+            if (isServerMode()) {
+                await syncFromServer();
+            }
+
+            loadSettingsForm();
+            loadPricesEditor();
+            renderOverview();
+            renderOrders();
+        }
+
+        window.addEventListener('DOMContentLoaded', async function () {
+            if (sessionStorage.getItem(AUTH_KEY) === '1') {
+                await bootDashboard();
+            }
+        });
+
+
+        /* ═══════════════════════════════════════════════════
+           NAVIGATION
+        ═══════════════════════════════════════════════════ */
+        const PAGE_TITLES = {
+            overview: 'نظرة عامة', orders: 'إدارة الطلبات',
+            prices: 'أسعار المنيو', settings: 'الضريبة والشحن', account: 'كلمة المرور'
+        };
+
+        function switchPage(name) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const pg = document.getElementById('page-' + name);
+            if (pg) pg.classList.add('active');
+            const lk = document.querySelector('[data-page="' + name + '"]');
+            if (lk) lk.classList.add('active');
+            document.getElementById('pageTitle').textContent = PAGE_TITLES[name] || name;
+            // close sidebar on mobile
+            if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
+            // refresh data on switch
+            if (name === 'overview') renderOverview();
+            if (name === 'orders') renderOrders();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        async function refreshAll() {
+            if (isServerMode()) {
+                await syncFromServer();
+            }
+            renderOverview();
+            renderOrders();
+            showToast('تم التحديث ✅');
+        }
+
+        /* ═══════════════════════════════════════════════════
+           OVERVIEW
+        ═══════════════════════════════════════════════════ */
+        function renderOverview() {
+            const orders = getOrders();
+            const total = orders.length;
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const delivered = orders.filter(o => o.status === 'delivered').length;
+            const revenue = orders.filter(o => o.status === 'delivered').reduce((s, o) => s + (o.total || 0), 0);
+
+            document.getElementById('s-total').textContent = total;
+            document.getElementById('s-pending').textContent = pending;
+            document.getElementById('s-delivered').textContent = delivered;
+            document.getElementById('s-revenue').textContent = revenue.toFixed(0) + ' ج';
+            document.getElementById('pendingBadge').textContent = pending;
+
+            // Settings overview
+            const settings = getSettings();
+            document.getElementById('ovVat').textContent = (settings.vatRate ?? 14) + '%';
+            document.getElementById('ovDelivery').textContent = (settings.deliveryFee ?? 30) + ' ج';
+            document.getElementById('ovMinOrder').textContent = (settings.minOrder ?? 0) + ' ج';
+
+            // Recent orders (last 5)
+            const recent = orders.slice(0, 5);
+            const container = document.getElementById('recentOrders');
+            if (!recent.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>لا توجد طلبات بعد</p></div>';
+                return;
+            }
+            container.innerHTML = '<table class="data-table"><thead><tr><th>الطلب</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead><tbody>' +
+                recent.map(o => `<tr>
+            <td><span style="font-family:monospace;color:var(--primary);font-weight:700;">${o.id}</span></td>
+            <td>${o.customerName}</td>
+            <td style="font-family:Outfit,sans-serif;font-weight:700;">${(o.total || 0).toFixed(2)} ج</td>
+            <td>${statusBadge(o.status)}</td>
+        </tr>`).join('') + '</tbody></table>';
+        }
+
+        /* ═══════════════════════════════════════════════════
+           ORDERS
+        ═══════════════════════════════════════════════════ */
+        function statusBadge(s) {
+            const map = { pending: 'قيد التجهيز', preparing: 'جارٍ التحضير', delivered: 'تم التوصيل', cancelled: 'ملغي' };
+            return `<span class="status-badge ${s}">${map[s] || s}</span>`;
+        }
+
+        function renderOrders() {
+            const filter = document.getElementById('orderFilter').value;
+            const search = (document.getElementById('orderSearch').value || '').toLowerCase();
+            let orders = getOrders();
+            if (filter !== 'all') orders = orders.filter(o => o.status === filter);
+            if (search) orders = orders.filter(o =>
+                (o.customerName || '').toLowerCase().includes(search) ||
+                (o.id || '').toLowerCase().includes(search) ||
+                (o.phone || '').includes(search)
+            );
+
+            const tbody = document.getElementById('ordersTbody');
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box-open"></i><p>لا توجد طلبات</p></div></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => {
+                const date = new Date(o.date);
+                const dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                const branch = (o.branch === 'assiut') ? 'أسيوط - المحافظة' : 'أسيوط الجديدة';
+                return `<tr>
+            <td><span style="font-family:monospace;font-size:12px;color:var(--primary);font-weight:700;">${o.id}</span></td>
+            <td>
+                <div style="font-weight:600;">${o.customerName}</div>
+                <div style="font-size:11px;color:var(--muted);">${o.phone}</div>
+            </td>
+            <td style="font-size:12px;color:var(--muted);">${branch}</td>
+            <td style="font-family:Outfit,sans-serif;font-weight:700;color:var(--primary);">${(o.total || 0).toFixed(2)} ج</td>
+            <td style="font-size:12px;color:var(--muted);">${dateStr}</td>
+            <td>
+                <select class="ctrl-select" onchange="updateStatus('${o.id}',this.value)" style="padding:5px 8px;font-size:12px;">
+                    <option value="pending"   ${o.status === 'pending' ? 'selected' : ''}>قيد التجهيز</option>
+                    <option value="preparing" ${o.status === 'preparing' ? 'selected' : ''}>جارٍ التحضير</option>
+                    <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>تم التوصيل</option>
+                    <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+                </select>
+            </td>
+            <td>
+                <div class="btn-row">
+                    <button class="btn-sm btn-ghost" onclick="viewOrder('${o.id}')"><i class="fas fa-eye"></i></button>
+                    <button class="btn-sm btn-danger" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>`;
+            }).join('');
+        }
+
+        function updateStatus(id, status) {
+            const orders = getOrders();
+            const idx = orders.findIndex(o => o.id === id);
+            if (idx > -1) { orders[idx].status = status; saveOrders(orders); }
+            renderOverview();
+            showToast('تم تحديث حالة الطلب');
+        }
+
+        function deleteOrder(id) {
+            if (!confirm('هل تريد حذف هذا الطلب؟')) return;
+            saveOrders(getOrders().filter(o => o.id !== id));
+            renderOrders(); renderOverview();
+            showToast('تم حذف الطلب');
+        }
+
+        function clearAllOrders() {
+            if (!confirm('هل تريد حذف جميع الطلبات نهائياً؟ لا يمكن التراجع!')) return;
+            saveOrders([]);
+            renderOrders(); renderOverview();
+            showToast('تم حذف جميع الطلبات', 'warn');
+        }
+
+        function viewOrder(id) {
+            const o = getOrders().find(o => o.id === id);
+            if (!o) return;
+            const items = (o.items || []).map(i =>
+                `<div class="order-row"><span>${i.nameAR || i.nameEN}</span><span style="font-weight:600;">${i.quantity} × ${i.price} ج</span></div>`
+            ).join('');
+            const branch = (o.branch === 'assiut') ? 'أسيوط - المحافظة' : 'أسيوط الجديدة';
+            document.getElementById('orderModalBody').innerHTML = `
+        <div class="order-row"><span class="order-row-label">رقم الطلب</span><span style="font-family:monospace;color:var(--primary);font-weight:700;">${o.id}</span></div>
+        <div class="order-row"><span class="order-row-label">العميل</span><span>${o.customerName}</span></div>
+        <div class="order-row"><span class="order-row-label">الهاتف</span><span>${o.phone}</span></div>
+        <div class="order-row"><span class="order-row-label">الفرع</span><span>${branch}</span></div>
+        <div class="order-row"><span class="order-row-label">العنوان</span><span style="font-size:13px;text-align:left;">${o.address || '—'}</span></div>
+        <div style="margin:12px 0;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;">الأصناف المطلوبة</div>
+            ${items || '<p style="color:var(--muted);font-size:13px;">لا توجد تفاصيل</p>'}
+        </div>
+        <div class="order-row"><span class="order-row-label">المجموع الفرعي</span><span>${(o.subtotal || 0).toFixed(2)} ج</span></div>
+        <div class="order-row"><span class="order-row-label">الإجمالي المدفوع</span><span class="order-total">${(o.total || 0).toFixed(2)} ج</span></div>
+        <div style="margin-top:14px;">
+            <select class="ctrl-select" style="width:100%;" onchange="updateStatus('${o.id}',this.value)">
+                <option value="pending"   ${o.status === 'pending' ? 'selected' : ''}>قيد التجهيز</option>
+                <option value="preparing" ${o.status === 'preparing' ? 'selected' : ''}>جارٍ التحضير</option>
+                <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>تم التوصيل</option>
+                <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+            </select>
+        </div>
+    `;
+            document.getElementById('orderModal').classList.add('open');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('open');
+        }
+
+        document.getElementById('orderModal').addEventListener('click', function (e) {
+            if (e.target === this) closeOrderModal();
+        });
+
+        /* ═══════════════════════════════════════════════════
+           PRICES
+        ═══════════════════════════════════════════════════ */
+        function loadPricesEditor() {
+            const prices = getEffectivePrices();
+            const container = document.getElementById('pricesEditor');
+            container.innerHTML = Object.keys(DEFAULT_PRICES).map(id => {
+                const def = DEFAULT_PRICES[id];
+                const cur = prices[id] || def;
+                const name = ITEM_NAMES_AR[id] || id;
+                const cat = ITEM_CATS[id] || '';
+
+                const sInput = def.s !== undefined
+                    ? `<input type="number" class="price-input" data-id="${id}" data-size="s" value="${cur.s || ''}" min="0" step="5">`
+                    : `<input class="price-input" disabled value="—">`;
+                const mInput = def.m !== undefined
+                    ? `<input type="number" class="price-input" data-id="${id}" data-size="m" value="${cur.m || ''}" min="0" step="5">`
+                    : def.single !== undefined
+                        ? `<input type="number" class="price-input" data-id="${id}" data-size="single" value="${cur.single || ''}" min="0" step="5">`
+                        : `<input class="price-input" disabled value="—">`;
+                const lInput = def.l !== undefined
+                    ? `<input type="number" class="price-input" data-id="${id}" data-size="l" value="${cur.l || ''}" min="0" step="5">`
+                    : `<input class="price-input" disabled value="—">`;
+
+                return `<div class="price-row">
+            <div><div class="price-row-name">${name}</div><div class="price-row-cat">${cat}</div></div>
+            ${sInput}${mInput}${lInput}
+        </div>`;
+            }).join('');
+        }
+
+        function savePrices() {
+            const inputs = document.querySelectorAll('.price-input:not([disabled])');
+            const prices = {};
+            inputs.forEach(inp => {
+                const id = inp.dataset.id;
+                const size = inp.dataset.size;
+                const val = parseFloat(inp.value);
+                if (!id || !size || isNaN(val)) return;
+                if (!prices[id]) prices[id] = {};
+                prices[id][size] = val;
+            });
+            savePricesData(prices);
+            showToast('تم حفظ أسعار المنيو ✅ — ستظهر على الموقع عند التحديث');
+        }
+
+        function resetPrices() {
+            if (!confirm('هل تريد إعادة جميع الأسعار للقيم الافتراضية؟')) return;
+            localStorage.removeItem(PRICES_KEY);
+            syncToServer();
+            loadPricesEditor();
+            showToast('تم إعادة الأسعار للافتراضي', 'warn');
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SETTINGS
+        ═══════════════════════════════════════════════════ */
+        // Settings are now managed via admin.js API calls. The loadData() function from admin.js handles populating the form on page load.
+// The save button now invokes saveData() from admin.js.
+// No local loadSettingsForm or saveSettings needed.
+
+    </script>
+</body>
+
+</html>
