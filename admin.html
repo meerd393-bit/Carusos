@@ -942,6 +942,10 @@
             margin-bottom: 16px;
         }
 
+        #menuToggle {
+            display: none;
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 900px) {
             .stats-grid {
@@ -958,12 +962,16 @@
         }
 
         @media (max-width: 640px) {
+            #menuToggle {
+                display: flex;
+            }
             :root {
-                --sidebar-w: 0px;
+                --sidebar-w: 0px; /* main content takes full width */
             }
 
             .sidebar {
                 transform: translateX(100%);
+                width: 260px; /* fixed width for mobile overlay */
             }
 
             .sidebar.open {
