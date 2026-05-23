@@ -7,12 +7,13 @@
 // =====================================================
 
 const firebaseConfig = {
-    apiKey: "PASTE_YOUR_API_KEY_HERE",
-    authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
-    projectId: "PASTE_YOUR_PROJECT_ID_HERE",
-    storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
-    messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
-    appId: "PASTE_YOUR_APP_ID_HERE"
+  apiKey: "AIzaSyBHxUJfiOPZtpFdF5wSDkXLmshVyY-VFfQ",
+  authDomain: "carusos-restaurant.firebaseapp.com",
+  projectId: "carusos-restaurant",
+  storageBucket: "carusos-restaurant.firebasestorage.app",
+  messagingSenderId: "202624644443",
+  appId: "1:202624644443:web:25b93d1294296c99a2d67e",
+  measurementId: "G-WDEEHBLT8C"
 };
 
 // Initialize Firebase
