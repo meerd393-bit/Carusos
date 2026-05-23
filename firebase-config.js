@@ -67,10 +67,15 @@ async function addOrder(orderData) {
 
 /** مراقبة الطلبات لحظياً (Real-time) للـ Dashboard */
 function onOrdersUpdate(callback) {
-    const q = query(ordersRef, orderBy('date', 'desc'));
-    return onSnapshot(q, (snapshot) => {
+    return onSnapshot(ordersRef, (snapshot) => {
         const orders = [];
         snapshot.forEach(d => orders.push({ firebaseId: d.id, ...d.data() }));
+        // Sort locally to avoid dropping old orders without date field or missing index errors
+        orders.sort((a, b) => {
+            const d1 = a.date ? new Date(a.date).getTime() : 0;
+            const d2 = b.date ? new Date(b.date).getTime() : 0;
+            return d2 - d1;
+        });
         callback(orders);
     });
 }

@@ -1579,7 +1579,6 @@
             const waitForFirebase = () => new Promise(resolve => {
                 if (window._firebaseReady) return resolve();
                 window.addEventListener('firebase-ready', resolve, { once: true });
-                setTimeout(resolve, 3000); // fallback timeout
             });
             await waitForFirebase();
 

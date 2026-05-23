@@ -505,7 +505,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const waitForFirebase = () => new Promise(resolve => {
         if (window._firebaseReady) return resolve();
         window.addEventListener('firebase-ready', resolve, { once: true });
-        setTimeout(resolve, 3000); // fallback timeout
+        setTimeout(() => {
+            console.warn('Firebase init timeout - falling back to local storage.');
+            resolve();
+        }, 8000); // 8 seconds fallback
     });
     await waitForFirebase();
 

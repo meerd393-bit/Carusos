@@ -1,0 +1,26 @@
+{
+    "orders": [],
+    "settings": {
+        "vatRate": 14,
+        "deliveryFee": 30,
+        "minOrder": 0,
+        "waPhone": "201229746767",
+        "waMsg": "لدي طلب جديد من الموقع",
+        "ordersOpen": "1"
+    },
+    "prices": {
+        "pizza-margherita": { "s": 95, "m": 130, "l": 175 },
+        "pizza-ranch": { "s": 130, "m": 175, "l": 225 },
+        "pizza-carusos": { "s": 140, "m": 185, "l": 235 },
+        "pizza-pepperoni": { "s": 120, "m": 160, "l": 210 },
+        "pizza-fourcheese": { "s": 125, "m": 170, "l": 215 },
+        "burger-classic": { "s": 100, "m": 130, "l": 160 },
+        "burger-carusos": { "s": 130, "m": 160, "l": 190 },
+        "pasta-alfredo": { "single": 110 },
+        "pasta-chicken-mush": { "single": 100 },
+        "sandwich-crispy": { "s": 105, "m": 140 },
+        "sandwich-sausage": { "s": 90, "m": 115 },
+        "side-fries-cheese": { "single": 50 },
+        "side-mozzarella-sticks": { "single": 50 }
+    }
+}
