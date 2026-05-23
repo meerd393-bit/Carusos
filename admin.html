@@ -1003,6 +1003,26 @@
 
 <body>
 
+    <!-- Firebase initialization -->
+    <script type="module">
+        import {
+            fetchSettings, fetchPrices,
+            saveSettings, savePrices,
+            addOrder, onOrdersUpdate, updateOrderStatus, deleteOrder
+        } from './firebase-config.js';
+
+        window._fbFetchSettings   = fetchSettings;
+        window._fbFetchPrices     = fetchPrices;
+        window._fbSaveSettings    = saveSettings;
+        window._fbSavePrices      = savePrices;
+        window._fbAddOrder        = addOrder;
+        window._fbOnOrdersUpdate  = onOrdersUpdate;
+        window._fbUpdateStatus    = updateOrderStatus;
+        window._fbDeleteOrder     = deleteOrder;
+        window._firebaseReady     = true;
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+
     <!-- ════════════════════════════════════════════════
      LOGIN SCREEN
 ════════════════════════════════════════════════ -->
@@ -1434,54 +1454,55 @@
             return window.location.protocol.startsWith('http');
         }
 
+        // ── Firebase Sync ──────────────────────────────────────────
+        // Live orders cache (updated by Firebase real-time listener)
+        let _ordersCache = [];
+        let _fbUnsubscribe = null;
+
         async function syncFromServer() {
-            if (!isServerMode()) return;
-            try {
-                const response = await fetch('/api/data');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.orders) localStorage.setItem(ORDERS_KEY, JSON.stringify(data.orders));
-                    if (data.settings) localStorage.setItem(SETTINGS_KEY, JSON.stringify(data.settings));
-                    if (data.prices) localStorage.setItem(PRICES_KEY, JSON.stringify(data.prices));
+            // Pull settings + prices from Firebase
+            if (window._fbFetchSettings) {
+                try {
+                    const [settings, prices] = await Promise.all([
+                        window._fbFetchSettings(),
+                        window._fbFetchPrices()
+                    ]);
+                    if (settings) localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+                    if (prices)   localStorage.setItem(PRICES_KEY,   JSON.stringify(prices));
+                } catch (e) {
+                    console.warn('[Firebase] syncFromServer error:', e);
                 }
-            } catch (e) {
-                console.warn('Could not sync database from local Node server:', e);
             }
         }
 
-        async function syncToServer() {
-            if (!isServerMode()) return;
-            try {
-                const payload = {
-                    orders: getOrders(),
-                    settings: getSettings(),
-                    prices: getPrices()
-                };
-                await fetch('/api/data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (e) {
-                console.error('Could not save database changes to local Node server:', e);
-            }
+        function startOrdersListener() {
+            if (!window._fbOnOrdersUpdate) return;
+            if (_fbUnsubscribe) _fbUnsubscribe(); // remove previous listener
+            _fbUnsubscribe = window._fbOnOrdersUpdate((orders) => {
+                _ordersCache = orders;
+                renderOrders();
+                renderOverview();
+            });
         }
 
         function getPass() { return localStorage.getItem(PASS_KEY) || DEFAULT_PASS; }
-        function getOrders() { try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); } catch (e) { return []; } }
+        function getOrders() { return _ordersCache; }
         function saveOrders(o) {
-            localStorage.setItem(ORDERS_KEY, JSON.stringify(o));
-            syncToServer();
+            // orders are managed via Firebase; no local write needed
         }
         function getSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) { return {}; } }
-        function saveSettingsData(s) {
+        async function saveSettingsData(s) {
             localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
-            syncToServer();
+            if (window._fbSaveSettings) {
+                try { await window._fbSaveSettings(s); } catch(e) { console.error('[Firebase] saveSettings error:', e); }
+            }
         }
         function getPrices() { try { return JSON.parse(localStorage.getItem(PRICES_KEY) || '{}'); } catch (e) { return {}; } }
-        function savePricesData(p) {
+        async function savePricesData(p) {
             localStorage.setItem(PRICES_KEY, JSON.stringify(p));
-            syncToServer();
+            if (window._fbSavePrices) {
+                try { await window._fbSavePrices(p); } catch(e) { console.error('[Firebase] savePrices error:', e); }
+            }
         }
 
         function getEffectivePrices() {
@@ -1554,15 +1575,23 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('appShell').style.display = 'block';
 
-            // Fetch live settings and database from Node server if running
-            if (isServerMode()) {
-                await syncFromServer();
-            }
+            // Wait for Firebase to be ready (module loads async)
+            const waitForFirebase = () => new Promise(resolve => {
+                if (window._firebaseReady) return resolve();
+                window.addEventListener('firebase-ready', resolve, { once: true });
+                setTimeout(resolve, 3000); // fallback timeout
+            });
+            await waitForFirebase();
+
+            // Pull settings & prices from Firebase cloud
+            await syncFromServer();
+
+            // Start real-time orders listener
+            startOrdersListener();
 
             loadSettingsForm();
             loadPricesEditor();
             renderOverview();
-            renderOrders();
         }
 
         window.addEventListener('DOMContentLoaded', async function () {
@@ -1675,6 +1704,7 @@
                 const date = new Date(o.date);
                 const dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
                 const branch = (o.branch === 'assiut') ? 'أسيوط - المحافظة' : 'أسيوط الجديدة';
+                const fid = o.firebaseId || o.id;
                 return `<tr>
             <td><span style="font-family:monospace;font-size:12px;color:var(--primary);font-weight:700;">${o.id}</span></td>
             <td>
@@ -1685,7 +1715,7 @@
             <td style="font-family:Outfit,sans-serif;font-weight:700;color:var(--primary);">${(o.total || 0).toFixed(2)} ج</td>
             <td style="font-size:12px;color:var(--muted);">${dateStr}</td>
             <td>
-                <select class="ctrl-select" onchange="updateStatus('${o.id}',this.value)" style="padding:5px 8px;font-size:12px;">
+                <select class="ctrl-select" onchange="updateStatus('${fid}',this.value)" style="padding:5px 8px;font-size:12px;">
                     <option value="pending"   ${o.status === 'pending' ? 'selected' : ''}>قيد التجهيز</option>
                     <option value="preparing" ${o.status === 'preparing' ? 'selected' : ''}>جارٍ التحضير</option>
                     <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>تم التوصيل</option>
@@ -1694,38 +1724,49 @@
             </td>
             <td>
                 <div class="btn-row">
-                    <button class="btn-sm btn-ghost" onclick="viewOrder('${o.id}')"><i class="fas fa-eye"></i></button>
-                    <button class="btn-sm btn-danger" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+                    <button class="btn-sm btn-ghost" onclick="viewOrder('${fid}')"><i class="fas fa-eye"></i></button>
+                    <button class="btn-sm btn-danger" onclick="deleteOrderById('${fid}')"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
         </tr>`;
             }).join('');
         }
 
-        function updateStatus(id, status) {
-            const orders = getOrders();
-            const idx = orders.findIndex(o => o.id === id);
-            if (idx > -1) { orders[idx].status = status; saveOrders(orders); }
-            renderOverview();
-            showToast('تم تحديث حالة الطلب');
+        async function updateStatus(firebaseId, status) {
+            if (window._fbUpdateStatus) {
+                try {
+                    await window._fbUpdateStatus(firebaseId, status);
+                    showToast('تم تحديث حالة الطلب ✅');
+                } catch(e) {
+                    console.error('[Firebase] updateStatus error:', e);
+                    showToast('فشل تحديث الحالة', 'warn');
+                }
+            }
         }
 
-        function deleteOrder(id) {
+        async function deleteOrderById(firebaseId) {
             if (!confirm('هل تريد حذف هذا الطلب؟')) return;
-            saveOrders(getOrders().filter(o => o.id !== id));
-            renderOrders(); renderOverview();
-            showToast('تم حذف الطلب');
+            if (window._fbDeleteOrder) {
+                try {
+                    await window._fbDeleteOrder(firebaseId);
+                    showToast('تم حذف الطلب');
+                } catch(e) {
+                    console.error('[Firebase] deleteOrder error:', e);
+                    showToast('فشل حذف الطلب', 'warn');
+                }
+            }
         }
 
         function clearAllOrders() {
             if (!confirm('هل تريد حذف جميع الطلبات نهائياً؟ لا يمكن التراجع!')) return;
-            saveOrders([]);
-            renderOrders(); renderOverview();
-            showToast('تم حذف جميع الطلبات', 'warn');
+            const all = getOrders();
+            Promise.all(all.map(o => window._fbDeleteOrder && window._fbDeleteOrder(o.firebaseId || o.id)))
+                .then(() => showToast('تم حذف جميع الطلبات', 'warn'))
+                .catch(e => { console.error(e); showToast('خطأ أثناء الحذف', 'warn'); });
         }
 
-        function viewOrder(id) {
-            const o = getOrders().find(o => o.id === id);
+        function viewOrder(firebaseId) {
+            const o = getOrders().find(o => (o.firebaseId || o.id) === firebaseId);
             if (!o) return;
             const items = (o.items || []).map(i =>
                 `<div class="order-row"><span>${i.nameAR || i.nameEN}</span><span style="font-weight:600;">${i.quantity} × ${i.price} ج</span></div>`

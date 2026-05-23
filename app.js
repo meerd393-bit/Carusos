@@ -437,17 +437,11 @@ function isServerMode() {
     return window.location.protocol.startsWith('http');
 }
 
-// --- Read settings from Admin Dashboard (localStorage) ---
-function getAdminSettings() {
-    try { return JSON.parse(localStorage.getItem('carusos_settings') || '{}'); } catch(e) { return {}; }
-}
-function getAdminPrices() {
-    try { return JSON.parse(localStorage.getItem('carusos_prices') || '{}'); } catch(e) { return {}; }
-}
+// --- Firebase imports (loaded as ES module via index.html) ---
+// fetchSettings, fetchPrices, addOrder are imported in index.html <script type="module">
 
 // Apply admin-set prices to MENU_ITEMS array
-function applyAdminPrices() {
-    const saved = getAdminPrices();
+function applyAdminPrices(saved) {
     if (!saved || !Object.keys(saved).length) return;
     MENU_ITEMS.forEach(item => {
         if (saved[item.id]) {
@@ -457,51 +451,45 @@ function applyAdminPrices() {
 }
 
 async function syncWithServer() {
-    // 1. Initial local fallback (immediate rendering safety)
-    const _settings = getAdminSettings();
-    VAT_RATE = (_settings.vatRate !== undefined ? parseFloat(_settings.vatRate) : 14) / 100;
-    DELIVERY_FEE = _settings.deliveryFee !== undefined ? parseFloat(_settings.deliveryFee) : 30;
-    WHATSAPP_PHONE = _settings.waPhone || "201229746767";
-    WHATSAPP_MSG = _settings.waMsg || "لدي طلب جديد من الموقع";
-    IS_ORDERS_OPEN = (_settings.ordersOpen === '0' || _settings.ordersOpen === false || _settings.ordersOpen === 0) ? false : true;
-    applyAdminPrices();
-
-    if (!isServerMode()) return;
-
-    // 2. Fetch live data from local Node server if accessed via http/https
+    // 1. Fetch from Firebase (cloud)
     try {
-        const response = await fetch('/api/data');
-        if (response.ok) {
-            const data = await response.json();
-            
-            // Sync settings
-            if (data.settings) {
-                VAT_RATE = (data.settings.vatRate !== undefined ? parseFloat(data.settings.vatRate) : 14) / 100;
-                DELIVERY_FEE = data.settings.deliveryFee !== undefined ? parseFloat(data.settings.deliveryFee) : 30;
-                WHATSAPP_PHONE = data.settings.waPhone || "201229746767";
-                WHATSAPP_MSG = data.settings.waMsg || "لدي طلب جديد من الموقع";
-                IS_ORDERS_OPEN = (data.settings.ordersOpen === '0' || data.settings.ordersOpen === false || data.settings.ordersOpen === 0) ? false : true;
-                localStorage.setItem('carusos_settings', JSON.stringify(data.settings));
+        if (window._fbFetchSettings && window._fbFetchPrices) {
+            const [settings, prices] = await Promise.all([
+                window._fbFetchSettings(),
+                window._fbFetchPrices()
+            ]);
+
+            if (settings) {
+                VAT_RATE = (settings.vatRate !== undefined ? parseFloat(settings.vatRate) : 14) / 100;
+                DELIVERY_FEE = settings.deliveryFee !== undefined ? parseFloat(settings.deliveryFee) : 30;
+                WHATSAPP_PHONE = settings.waPhone || "201229746767";
+                WHATSAPP_MSG = settings.waMsg || "لدي طلب جديد من الموقع";
+                IS_ORDERS_OPEN = (settings.ordersOpen === '0' || settings.ordersOpen === false || settings.ordersOpen === 0) ? false : true;
+                // cache locally as fallback
+                try { localStorage.setItem('carusos_settings', JSON.stringify(settings)); } catch(e) {}
             }
-            
-            // Sync prices
-            if (data.prices) {
-                localStorage.setItem('carusos_prices', JSON.stringify(data.prices));
-                MENU_ITEMS.forEach(item => {
-                    if (data.prices[item.id]) {
-                        Object.assign(item.prices, data.prices[item.id]);
-                    }
-                });
+
+            if (prices) {
+                applyAdminPrices(prices);
+                try { localStorage.setItem('carusos_prices', JSON.stringify(prices)); } catch(e) {}
             }
-            
-            // Sync orders
-            if (data.orders) {
-                localStorage.setItem('carusos_orders', JSON.stringify(data.orders));
-            }
+            return; // Firebase succeeded, no need for fallback
         }
     } catch (e) {
-        console.warn('Could not sync with local server backend. Falling back to local storage cache.', e);
+        console.warn('[Firebase] syncWithServer failed, using cache fallback:', e);
     }
+
+    // 2. Fallback: use localStorage cache
+    try {
+        const _settings = JSON.parse(localStorage.getItem('carusos_settings') || '{}');
+        VAT_RATE = (_settings.vatRate !== undefined ? parseFloat(_settings.vatRate) : 14) / 100;
+        DELIVERY_FEE = _settings.deliveryFee !== undefined ? parseFloat(_settings.deliveryFee) : 30;
+        WHATSAPP_PHONE = _settings.waPhone || "201229746767";
+        WHATSAPP_MSG = _settings.waMsg || "لدي طلب جديد من الموقع";
+        IS_ORDERS_OPEN = (_settings.ordersOpen === '0' || _settings.ordersOpen === false) ? false : true;
+        const _prices = JSON.parse(localStorage.getItem('carusos_prices') || '{}');
+        applyAdminPrices(_prices);
+    } catch(e) { /* use defaults */ }
 }
 
 // --- Selected options for Menu Item Cards ---
@@ -887,32 +875,25 @@ function processCheckoutOrder(event) {
         status: 'pending'
     };
 
-    // 1. Persist order to localStorage so admin dashboard can read it (offline backup)
+    // 1. Save order to Firebase (primary cloud storage)
+    try {
+        if (window._fbAddOrder) {
+            window._fbAddOrder(orderData)
+                .then(() => console.log('[Firebase] Order saved successfully:', orderId))
+                .catch(err => console.error('[Firebase] Error saving order:', err));
+        }
+    } catch (err) {
+        console.warn('[Firebase] Could not save order to cloud:', err);
+    }
+
+    // 2. Also cache locally as offline backup
     try {
         const ordersKey = 'carusos_orders';
         const existing = JSON.parse(localStorage.getItem(ordersKey) || '[]');
         existing.unshift(orderData);
         localStorage.setItem(ordersKey, JSON.stringify(existing));
-
-        // 2. If in server mode, sync with server.js immediately
-        if (isServerMode()) {
-            fetch('/api/data')
-                .then(res => res.json())
-                .then(db => {
-                    db.orders = db.orders || [];
-                    db.orders.unshift(orderData);
-                    return fetch('/api/data', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ orders: db.orders })
-                    });
-                })
-                .then(res => res.json())
-                .then(resData => console.log('Order synced to server database:', resData))
-                .catch(err => console.error('Error syncing order to server:', err));
-        }
     } catch (err) {
-        console.warn('Could not persist order for admin dashboard', err);
+        console.warn('Could not cache order locally', err);
     }
 
     // 3. Format beautiful WhatsApp Receipt and Redirect Customer

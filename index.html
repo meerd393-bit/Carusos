@@ -693,6 +693,27 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Scripts -->
+    <!-- Firebase initialization (must be type=module and before app.js) -->
+    <script type="module">
+        import {
+            fetchSettings, fetchPrices,
+            addOrder, onOrdersUpdate, updateOrderStatus, deleteOrder, saveSettings, savePrices
+        } from './firebase-config.js';
+
+        // Expose Firebase helpers globally for app.js (which is not a module)
+        window._fbFetchSettings   = fetchSettings;
+        window._fbFetchPrices     = fetchPrices;
+        window._fbAddOrder        = addOrder;
+        window._fbOnOrdersUpdate  = onOrdersUpdate;
+        window._fbUpdateStatus    = updateOrderStatus;
+        window._fbDeleteOrder     = deleteOrder;
+        window._fbSaveSettings    = saveSettings;
+        window._fbSavePrices      = savePrices;
+
+        // Notify app.js that Firebase is ready
+        window._firebaseReady = true;
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
     <script src="app.js"></script>
     <script src="animations.js"></script>
 </body>
