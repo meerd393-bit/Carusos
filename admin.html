@@ -1820,9 +1820,30 @@
         /* ═══════════════════════════════════════════════════
            SETTINGS
         ═══════════════════════════════════════════════════ */
-        // Settings are now managed via admin.js API calls. The loadData() function from admin.js handles populating the form on page load.
-// The save button now invokes saveData() from admin.js.
-// No local loadSettingsForm or saveSettings needed.
+        function loadSettingsForm() {
+            const s = getSettings();
+            document.getElementById('vatRate').value = s.vatRate ?? 14;
+            document.getElementById('deliveryFee').value = s.deliveryFee ?? 30;
+            document.getElementById('minOrder').value = s.minOrder ?? 0;
+            document.getElementById('waPhone').value = s.waPhone ?? '201229746767';
+            document.getElementById('waMsg').value = s.waMsg ?? 'لدي طلب جديد من الموقع';
+            document.getElementById('ordersOpen').value = (s.ordersOpen === false || s.ordersOpen === '0') ? '0' : '1';
+        }
+
+        function saveSettings() {
+            const s = {
+                vatRate: parseFloat(document.getElementById('vatRate').value) || 14,
+                deliveryFee: parseFloat(document.getElementById('deliveryFee').value) || 30,
+                minOrder: parseFloat(document.getElementById('minOrder').value) || 0,
+                waPhone: document.getElementById('waPhone').value,
+                waMsg: document.getElementById('waMsg').value,
+                ordersOpen: document.getElementById('ordersOpen').value
+            };
+            saveSettingsData(s);
+            renderOverview();
+            showFeedback('settingsFeedback');
+            showToast('تم حفظ الإعدادات ✅');
+        }
 
     </script>
 </body>
